@@ -1,0 +1,46 @@
+body {
+  font-family: 'poppins' , Sans-Serif;
+}
+
+.shoes-list {
+  padding: 20px;
+  text-align: center;
+}
+
+.shoe-cards {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+}
+
+.shoe-card {
+  background-color: #f9f9f9;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  margin: 10px;
+  padding: 15px;
+  width: 200px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s;
+}
+
+.shoe-card:hover {
+  transform: scale(1.05);
+}
+
+.shoe-card img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 4px;
+}
+
+.shoe-card h3 {
+  font-size: 1.2em;
+  margin: 10px 0;
+}
+
+.shoe-card p {
+  font-size: 1em;
+  color: #333;
+}
