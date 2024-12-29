@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_URL = 'http://localhost:4000/api';
+const API_URL = 'https://shoestore.serveo.net/api';
 
 const api = axios.create({
   baseURL: API_URL,
@@ -27,7 +27,7 @@ export const fetchShoes = async () => {
     const response = await api.get('/shoes');
     const shoesWithUrl = response.data.map((shoe) => ({
       ...shoe,
-      imageUrl: `http://localhost:4000/images/shoes/${shoe.image}`,
+      imageUrl: `https://shoestore.serveo.net/images/shoes/${shoe.image}`,
     }));
     return shoesWithUrl;
   } catch (error) {
