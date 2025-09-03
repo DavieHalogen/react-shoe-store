@@ -1,22 +1,12 @@
-const fs = require('fs');
-const path = require('path');
+const pool = require('../config/db');
 
-
-exports.backgroundImages = (req, res) => {
-  
-  const backgroundImagesDir = path.join(__dirname, '..', 'images', 'backgroundimages');
-  
-  fs.readdir(backgroundImagesDir, (err, files) => {
-    if (err) {
-      return res.status(500).json({ message: 'Failed to read background images folder' });
-    }
-
-    // Filter image files (optional)
-    const imageFiles = files.filter(file => ['.jpg', '.jpeg', '.png', '.gif'].includes(path.extname(file).toLowerCase()));
-
-    // Map files to full URLs
-    const imageUrls = imageFiles.map(file => `http://localhost:4000/images/backgroundimages/${file}`);
-
+exports.backgroundImages = async (req, res) => {
+  try {
+    const result = await pool.query('SELECT image FROM "BackgroundImages"');
+    const imageUrls = result.rows.map(row => row.image);
     res.json(imageUrls);
-  });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Failed to fetch background images' });
+  }
 };
