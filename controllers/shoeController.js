@@ -1,4 +1,4 @@
-const pool = require('../config/db');
+const { pool } = require('../config/db');
 const cloudinary = require('../config/cloudinary');
 
 // Helper function to upload buffer to Cloudinary
