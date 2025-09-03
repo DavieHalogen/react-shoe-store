@@ -15,7 +15,7 @@ exports.createShoe = async (req, res) => {
     if (!req.file) return res.status(400).json({ message: 'Image is required' });
 
     try {
-        const upload = await cloudinary.uploader.upload(req.file.path, { folder: 'shoestore/shoes' });
+        const upload = await cloudinary.uploader.upload(req.file.path, { folder: 'images/shoes' });
         const imageUrl = upload.secure_url;
 
         const result = await pool.query(
@@ -49,7 +49,7 @@ exports.updateShoe = async (req, res) => {
         const params = [name, price];
 
         if (req.file) {
-            const upload = await cloudinary.uploader.upload(req.file.path, { folder: 'shoestore/shoes' });
+            const upload = await cloudinary.uploader.upload(req.file.path, { folder: 'images/shoes' });
             query += ', image = $3 WHERE id = $4';
             params.push(upload.secure_url, id);
         } else {
