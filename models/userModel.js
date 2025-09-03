@@ -1,88 +1,78 @@
-const pool = require('../config/db'); // Assuming you're using a pool connection
+const { pool } = require('../config/db'); // Postgres pool
 
 const User = {
   create: async (userData) => {
     const { username, email, password, phoneNumber, role, status } = userData;
     const registrationDate = new Date();
-    const [result] = await pool.query(
-      'INSERT INTO Users (username, email, password, phoneNumber, role, registrationDate, status) VALUES (?, ?, ?, ?, ?, ?, ?)',
+    const result = await pool.query(
+      `INSERT INTO "Users" 
+      (username, email, password, "phoneNumber", role, "registrationDate", status) 
+      VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING id`,
       [username, email, password, phoneNumber, role, registrationDate, status]
     );
-    return result.insertId;
+    return result.rows[0].id;
   },
-  
+
   findAll: async (sortBy = 'id', order = 'ASC') => {
-    // Define valid sorting fields and order directions
     const validSortFields = ['id', 'username', 'email', 'role', 'registrationDate'];
     const validOrder = ['ASC', 'DESC'];
 
-    // Validate sortBy and order
-    const sortField = validSortFields.includes(sortBy) ? sortBy : 'id';
+    const sortField = validSortFields.includes(sortBy) ? `"${sortBy}"` : 'id';
     const sortOrder = validOrder.includes(order) ? order : 'ASC';
 
-    // Query to fetch all users
-    const query = `
-      SELECT * 
-      FROM Users 
-      ORDER BY ${sortField} ${sortOrder}
-    `;
-
-    // Execute the query
-    const [rows] = await pool.query(query);
-    return rows;
+    const query = `SELECT * FROM "Users" ORDER BY ${sortField} ${sortOrder}`;
+    const result = await pool.query(query);
+    return result.rows;
   },
-  
+
   findByUsername: async (username) => {
-    const [rows] = await pool.query('SELECT * FROM Users WHERE username = ?', [username]);
-    return rows[0];
+    const result = await pool.query('SELECT * FROM "Users" WHERE username = $1', [username]);
+    return result.rows[0];
   },
 
   findByEmail: async (email) => {
-    const [rows] = await pool.query('SELECT * FROM Users WHERE email = ?', [email]);
-    return rows[0];
+    const result = await pool.query('SELECT * FROM "Users" WHERE email = $1', [email]);
+    return result.rows[0];
   },
-  
+
   findByEmailOrUsername: async (identifier) => {
-    const [rows] = await pool.query('SELECT * FROM Users WHERE email = ? OR username = ?', 
-    [identifier, identifier]
+    const result = await pool.query(
+      'SELECT * FROM "Users" WHERE email = $1 OR username = $2',
+      [identifier, identifier]
     );
-    return rows[0];
+    return result.rows[0];
   },
 
   findByPhoneNumber: async (phoneNumber) => {
-    const [rows] = await pool.query('SELECT * FROM Users WHERE phoneNumber = ?', [phoneNumber]);
-    return rows[0];
+    const result = await pool.query('SELECT * FROM "Users" WHERE "phoneNumber" = $1', [phoneNumber]);
+    return result.rows[0];
   },
 
   findById: async (id) => {
-    const [rows] = await pool.query('SELECT * FROM Users WHERE id = ?', [id]);
-    return rows[0];
+    const result = await pool.query('SELECT * FROM "Users" WHERE id = $1', [id]);
+    return result.rows[0];
   },
 
   update: async (id, userData) => {
-    const { username, email, phoneNumber, role } = userData; // Include role in the update
-    const [result] = await pool.query(
-      'UPDATE Users SET username = ?, email = ?, phoneNumber = ?, role = ? WHERE id = ?',
+    const { username, email, phoneNumber, role } = userData;
+    const result = await pool.query(
+      `UPDATE "Users" SET username = $1, email = $2, "phoneNumber" = $3, role = $4 WHERE id = $5`,
       [username, email, phoneNumber, role, id]
     );
-    return result;
+    return result.rowCount;
   },
 
   updateStatus: async (id, status) => {
-    // Validate status input
-    if (status !== 'active' && status !== 'inactive') {
-      throw new Error('Invalid status');
-    }
-    const [result] = await pool.query(
-      'UPDATE Users SET status = ? WHERE id = ?',
+    if (status !== 'active' && status !== 'inactive') throw new Error('Invalid status');
+    const result = await pool.query(
+      `UPDATE "Users" SET status = $1 WHERE id = $2`,
       [status, id]
     );
-    return result;
+    return result.rowCount;
   },
 
   delete: async (id) => {
-    // Delete user and their activity logs
-    await pool.query('DELETE FROM Users WHERE id = ?', [id]);
+    await pool.query('DELETE FROM "Users" WHERE id = $1', [id]);
   }
 };
 
