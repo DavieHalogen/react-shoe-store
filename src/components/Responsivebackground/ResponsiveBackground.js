@@ -1,60 +1,45 @@
 import React from 'react';
 import Box from '@mui/material/Box';
-import {fetchBackgroundImages} from '../../api/apiService'
+import { fetchBackgroundImages } from '../../api/apiService';
 
-const ResponsiveBackground = ({children}) => {
-  const [ backgroundImages, setBackgroundImages ] = React.useState([]);
-  
-  React.useEffect(() =>{
+const ResponsiveBackground = ({ children }) => {
+  const [backgroundImages, setBackgroundImages] = React.useState([]);
+  const [backgroundImage, setBackgroundImage] = React.useState(null);
+
+  React.useEffect(() => {
     const getBackgroundImages = async () => {
       try {
         const images = await fetchBackgroundImages();
         setBackgroundImages(images);
       } catch (error) {
-        console.log('Error fetching background images', error)
+        console.error('Error fetching background images:', error);
       }
     };
-     getBackgroundImages();
+    getBackgroundImages();
   }, []);
-  
-  
- const [backgroundImage, setBackgroundImage] = React.useState      ({       
-           imageUrl: null,
-           id: ""
-          }
-  )
-  
-  
-  React.useEffect(() =>{
-    function getBackgroundImage()  {
-        const randomNumber = Math.floor(Math.random() * backgroundImages.length);
-        const URL = backgroundImages[randomNumber]
-        setBackgroundImage(prevImage => ({
-            ...prevImage, imageUrl: URL
-        }
-     ))
+
+  React.useEffect(() => {
+    if (backgroundImages.length > 0) {
+      const randomIndex = Math.floor(Math.random() * backgroundImages.length);
+      setBackgroundImage(backgroundImages[randomIndex]);
     }
-    getBackgroundImage()
   }, [backgroundImages]);
-  
-  
-  
-  
+
   return (
-     <Box
-        sx={{
-          minHeight: '100vh',       // Full viewport height
-          backgroundImage: `url(${backgroundImage.imageUrl})`,
-          backgroundSize: 'cover',
-          backgroundPosition: 'center',
-          backgroundRepeat: 'no-repeat',
-          display: 'flex',
-          flexDirection: 'column',
-        }}
-      >
+    <Box
+      sx={{
+        minHeight: '100vh',
+        backgroundImage: backgroundImage ? `url(${backgroundImage})` : 'none',
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        backgroundRepeat: 'no-repeat',
+        display: 'flex',
+        flexDirection: 'column',
+      }}
+    >
       {children}
-     </Box>
+    </Box>
   );
-}
+};
 
 export default ResponsiveBackground;
