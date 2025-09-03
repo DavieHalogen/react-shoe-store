@@ -1,9 +1,12 @@
-const db = require('../config/db');
+const { pool } = require('../config/db');
 
 class Activity {
     static async findRecent(limit) {
-        const [results] = await db.query('SELECT * FROM activities ORDER BY createdAt DESC LIMIT ?', [limit]);
-        return results;
+        const result = await pool.query(
+            'SELECT * FROM "ActivityLog" ORDER BY "createdAt" DESC LIMIT $1',
+            [limit]
+        );
+        return result.rows;
     }
 }
 
