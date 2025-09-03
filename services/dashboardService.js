@@ -28,7 +28,7 @@ exports.getDashboardMetrics = async () => {
 exports.getRecentActivity = async () => {
     try {
         // Fetch recent activity (e.g., last 10 activities)
-        const [recentActivity] = await db.query('SELECT * FROM ActivityLog ORDER BY createdAt DESC LIMIT 10');
+        const [recentActivity] = await pool.query('SELECT * FROM ActivityLog ORDER BY createdAt DESC LIMIT 10');
         return recentActivity; // Adjust the return structure as needed
     } catch (error) {
         console.error('Error fetching recent activity:', error);
@@ -40,7 +40,7 @@ exports.getRecentActivity = async () => {
 exports.logActivity = async (action) => {
     try {
         const query = 'INSERT INTO ActivityLog (action) VALUES (?)';
-        await db.query(query, [action]);
+        await pool.query(query, [action]);
         console.log('Activity logged successfully.');
     } catch (error) {
         console.error('Error logging activity:', error.message);
@@ -51,7 +51,7 @@ exports.logActivity = async (action) => {
 exports.deleteLogsByUserId = async (userId) => {
     try {
         const query = 'DELETE FROM ActivityLog WHERE userId = ?';
-        const [result] = await db.query(query, [userId]);
+        const [result] = await pool.query(query, [userId]);
         console.log(`Deleted ${result.affectedRows} log(s) for user ID ${userId}.`);
         return result.affectedRows; // Return the number of deleted logs
     } catch (error) {
