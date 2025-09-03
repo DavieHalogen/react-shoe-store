@@ -1,4 +1,4 @@
-const pool = require('../config/db'); // Make sure to adjust the path as necessary
+const {pool} = require('../config/db'); // Make sure to adjust the path as necessary
 
 // Function to get dashboard metrics
 exports.getDashboardMetrics = async () => {
