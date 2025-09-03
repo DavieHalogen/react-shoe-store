@@ -1,16 +1,16 @@
-const db = require('../config/db'); // Make sure to adjust the path as necessary
+const pool = require('../config/db'); // Make sure to adjust the path as necessary
 
 // Function to get dashboard metrics
 exports.getDashboardMetrics = async () => {
     try {
         // Fetch total users
-        const [totalUsers] = await db.query('SELECT COUNT(*) AS count FROM Users');
+        const [totalUsers] = await pool.query('SELECT COUNT(*) AS count FROM Users');
 
         // Fetch active users
-        const [activeUsers] = await db.query("SELECT COUNT(*) AS count FROM Users WHERE status = 'active'");
+        const [activeUsers] = await pool.query("SELECT COUNT(*) AS count FROM Users WHERE status = 'active'");
 
         // Fetch total admin users
-        const [totalAdmins] = await db.query("SELECT COUNT(*) AS count FROM Users WHERE role = 'admin'");
+        const [totalAdmins] = await pool.query("SELECT COUNT(*) AS count FROM Users WHERE role = 'admin'");
 
         // Return metrics
         return {
