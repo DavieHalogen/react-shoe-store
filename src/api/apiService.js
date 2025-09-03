@@ -27,7 +27,7 @@ export const fetchShoes = async () => {
     const response = await api.get('/shoes');
     const shoesWithUrl = response.data.map((shoe) => ({
       ...shoe,
-      imageUrl: `https://shoestore.serveo.net/images/shoes/${shoe.image}`,
+      imageUrl: `https://react-shoe-store.onrender.com/images/shoes/${shoe.image}`,
     }));
     return shoesWithUrl;
   } catch (error) {
