@@ -41,7 +41,16 @@ const initializeTables = async () => {
       );
     `);
 
-    // OTP table
+    // BackgroundImages table
+    await pool.query(`
+      CREATE TABLE IF NOT EXISTS "BackgroundImages" (
+        id SERIAL PRIMARY KEY,
+        image TEXT NOT NULL,
+        "createdAt" TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+      );
+    `);
+
+    // OTPs table
     await pool.query(`
       CREATE TABLE IF NOT EXISTS "OTPs" (
         id SERIAL PRIMARY KEY,
